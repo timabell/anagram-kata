@@ -121,20 +121,27 @@ public class WordGrouper{
     // "You can make the following assumptions about the data in the files: The words in the input file are ordered by size"
     // because we know the words step up in size we can track the current size and when we've loaded all the words of one size in to memory (the "words" list) we can then process that group and pass the memorty back to the GC before moving to the next size
     IEnumerable<string> source = File.ReadLines(inputFile); // pulled this out to enumerable var as prep for extracting testable method
-    var wordLength = 0;
+    int? wordLength = null;
     List<string> words = new List<string>();
+    // todo: I'm sure this can be refactored to make the flow clearer. but this works for now. I'd add tests to this batching loop before refactoring but that'll take more time
     foreach (var line in source){
       var input = line.Trim();
       if (input == ""){ // todo: test coverage
         continue;
       }
-      words.Add(input);
-      if (wordLength!=input.Length){// release memory for previous size match when we get to longer words
+      if (wordLength==null){ // first word in file, initialize length
         wordLength=input.Length;
-        ProcessBatch(words);
-        words.Clear();
       }
+      if (input.Length != wordLength){// Starting new batch. Process previous and release memory to GC
+Console.WriteLine("BATCH {0}", wordLength);
+        ProcessBatch(words); // process previous batch
+        words.Clear();
+        wordLength=input.Length;
+      }
+
+      words.Add(input);
     }
+    ProcessBatch(words); // process last batch
   }
 
     private static void ProcessBatch(List<string> words)
