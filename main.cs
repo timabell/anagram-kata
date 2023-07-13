@@ -32,7 +32,7 @@ class Solution
 }
 
 [TestFixture]
-class Tests
+class GroupAnagramsTests
 {
     // todo: maybe make some nice data driven parameterized tests
     [Test]
@@ -76,8 +76,32 @@ class Tests
     //        var actual = WordGrouper.GroupAnagrams(input).ToList();
     //        // todo
     //    }
+}
 
-    // todo: move out a layer and test passing in a Stream of abitrary text and capture and assert on the stream of output text instead of piping straight to stdout.
+[TestFixture]
+class ProcessWordsTests
+{
+    [Test]
+    public void GroupsAnagrams(){
+        var input = new List<string>{
+            "foo",
+            "fff",
+            "oof",
+            "foof",
+            "abcd",
+            "ffoo",
+            "dcba",
+        };
+        var outputWriter = new StringWriter();
+        WordGrouper.ProcessWords(input, outputWriter);
+        var expected = @"foo,oof
+fff
+foof,ffoo
+abcd,dcba
+";
+        outputWriter.Flush();
+        Assert.AreEqual(expected, outputWriter.ToString());
+    }
 }
 
 /*
@@ -128,7 +152,7 @@ public class WordGrouper
         ProcessWords(File.ReadLines(inputFile), Console.Out);
     }
 
-    private static void ProcessWords(IEnumerable<string> source, System.IO.TextWriter output)
+    public static void ProcessWords(IEnumerable<string> source, System.IO.TextWriter output)
     {
         // "You can make the following assumptions about the data in the files: The words in the input file are ordered by size"
         // because we know the words step up in size we can track the current size and when we've loaded all the words of one size in to memory (the "words" list) we can then process that group and pass the memorty back to the GC before moving to the next size
@@ -148,14 +172,14 @@ public class WordGrouper
             }
             if (input.Length != wordLength)
             {// Starting new batch. Process previous and release memory to GC
-                ProcessBatch(words, Console.Out); // process previous batch
+                ProcessBatch(words, output); // process previous batch
                 words.Clear();
                 wordLength = input.Length;
             }
 
             words.Add(input);
         }
-        ProcessBatch(words, Console.Out); // process last batch
+        ProcessBatch(words, output); // process last batch
     }
 
     private static void ProcessBatch(List<string> words, System.IO.TextWriter output)
