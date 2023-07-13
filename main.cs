@@ -13,27 +13,32 @@ class Solution
     // all the handling of CLI things and unit testing here, all actual logic delegated to unit testable class(es) below
     static int Main(string[] args)
     {
-        if (args.Length>0){ // allow user to specifiy file (the "production" code)
-          WordGrouper.Run(args[0]);
-        } else { // helpful output
-          Console.WriteLine("No file provided, just running tests this time. Usage: program.exe <inputfile>");
+        if (args.Length > 0)
+        { // allow user to specifiy file (the "production" code)
+            WordGrouper.Run(args[0]);
+        }
+        else
+        { // helpful output
+            Console.WriteLine("No file provided, just running tests this time. Usage: program.exe <inputfile>");
 
-          // hard code example files and run them for the sake of this exercise, I don't see a way to pass them in when running in coderpad UI
-          WordGrouper.Run("example1.txt");
-          //WordGrouper.Run("/home/coderpad/data/example2.txt");
-          // This boilerplate is here to be able to run the unit tests in coderpad. There appears to be no buttons or ways to add test files and run them. https://coderpad.io/languages/csharp/
-          return new AutoRun(Assembly.GetCallingAssembly()).Execute(new String[] {"--labels=All"});
+            // hard code example files and run them for the sake of this exercise, I don't see a way to pass them in when running in coderpad UI
+            WordGrouper.Run("example1.txt");
+            //WordGrouper.Run("/home/coderpad/data/example2.txt");
+            // This boilerplate is here to be able to run the unit tests in coderpad. There appears to be no buttons or ways to add test files and run them. https://coderpad.io/languages/csharp/
+            return new AutoRun(Assembly.GetCallingAssembly()).Execute(new String[] { "--labels=All" });
         }
         return 0; // unix program exit code 0, meaning success - https://tldp.org/LDP/abs/html/exitcodes.html
     }
 }
 
 [TestFixture]
-class Tests{
+class Tests
+{
     // todo: maybe make some nice data driven parameterized tests
     [Test]
-    public void GroupsMatchingAnagrams(){
-        var input = new List<string>{"cba", "cab"};
+    public void GroupsMatchingAnagrams()
+    {
+        var input = new List<string> { "cba", "cab" };
         var actual = WordGrouper.GroupAnagrams(input).ToList();
         // todo: tidy this up a bit, not very DRY or clear. some kind of deep-equal might be nice
         Assert.AreEqual(1, actual.Count());
@@ -46,8 +51,9 @@ class Tests{
     }
 
     [Test]
-    public void DoesntGroupNonMatchingAnagrams(){
-        var input = new List<string>{"abc", "bcd"};
+    public void DoesntGroupNonMatchingAnagrams()
+    {
+        var input = new List<string> { "abc", "bcd" };
         var actual = WordGrouper.GroupAnagrams(input).ToList();
         Assert.AreEqual(2, actual.Count());
 
@@ -64,14 +70,14 @@ class Tests{
 
     // todo: expand the suite some more, this was enough to TDD the first file processing
 
-//     [Test]
-//    public void IgnoresBlanks(){
-//        var input = new List<string>{"abc", " "};
-//        var actual = WordGrouper.GroupAnagrams(input).ToList();
-//        // todo
-//    }
+    //     [Test]
+    //    public void IgnoresBlanks(){
+    //        var input = new List<string>{"abc", " "};
+    //        var actual = WordGrouper.GroupAnagrams(input).ToList();
+    //        // todo
+    //    }
 
-  // todo: move out a layer and test passing in a Stream of abitrary text and capture and assert on the stream of output text instead of piping straight to stdout.
+    // todo: move out a layer and test passing in a Stream of abitrary text and capture and assert on the stream of output text instead of piping straight to stdout.
 }
 
 /*
@@ -114,56 +120,65 @@ todo/questions
 /// each of these groups. The groups should be separated by newlines and the words inside
 /// each group by commas.
 /// </summary>
-public class WordGrouper{
-  public static void Run(string inputFile){
-    Console.WriteLine("Processing " + inputFile);
-    // todo: move this batching logic out of Run() and unit test, needs some thought as to what the abstraction would like like and I'm out of time.
-    // "You can make the following assumptions about the data in the files: The words in the input file are ordered by size"
-    // because we know the words step up in size we can track the current size and when we've loaded all the words of one size in to memory (the "words" list) we can then process that group and pass the memorty back to the GC before moving to the next size
-    IEnumerable<string> source = File.ReadLines(inputFile); // pulled this out to enumerable var as prep for extracting testable method
-    int? wordLength = null;
-    List<string> words = new List<string>();
-    // todo: I'm sure this can be refactored to make the flow clearer. but this works for now. I'd add tests to this batching loop before refactoring but that'll take more time
-    foreach (var line in source){
-      var input = line.Trim();
-      if (input == ""){ // todo: test coverage
-        continue;
-      }
-      if (wordLength==null){ // first word in file, initialize length
-        wordLength=input.Length;
-      }
-      if (input.Length != wordLength){// Starting new batch. Process previous and release memory to GC
-Console.WriteLine("BATCH {0}", wordLength);
-        ProcessBatch(words); // process previous batch
-        words.Clear();
-        wordLength=input.Length;
-      }
-
-      words.Add(input);
-    }
-    ProcessBatch(words); // process last batch
-  }
-
-    private static void ProcessBatch(List<string> words)
+public class WordGrouper
+{
+    public static void Run(string inputFile)
     {
-      var grouped = GroupAnagrams(words);
-      foreach (var group in grouped){
-          // todo: write this to some kind of sink to make it testable
-          Console.WriteLine(string.Join(',', group));
-      }
+        Console.WriteLine("Processing " + inputFile);
+        ProcessWords(File.ReadLines(inputFile), Console.Out);
     }
 
-    public static IEnumerable<IGrouping<string, string>> GroupAnagrams(IList<string> input){
-    return input.GroupBy(i => SortString(i), i => i);
-  }
+    private static void ProcessWords(IEnumerable<string> source, System.IO.TextWriter output)
+    {
+        // "You can make the following assumptions about the data in the files: The words in the input file are ordered by size"
+        // because we know the words step up in size we can track the current size and when we've loaded all the words of one size in to memory (the "words" list) we can then process that group and pass the memorty back to the GC before moving to the next size
+        int? wordLength = null;
+        List<string> words = new List<string>();
+        // todo: I'm sure this can be refactored to make the flow clearer. but this works for now. I'd add tests to this batching loop before refactoring but that'll take more time
+        foreach (var line in source)
+        {
+            var input = line.Trim();
+            if (input == "")
+            { // todo: test coverage
+                continue;
+            }
+            if (wordLength == null)
+            { // first word in file, initialize length
+                wordLength = input.Length;
+            }
+            if (input.Length != wordLength)
+            {// Starting new batch. Process previous and release memory to GC
+                ProcessBatch(words, Console.Out); // process previous batch
+                words.Clear();
+                wordLength = input.Length;
+            }
 
-  static string SortString(string input)
-  {
-      // https://stackoverflow.com/questions/6441583/is-there-a-simple-way-that-i-can-sort-characters-in-a-string-in-alphabetical-ord
-      // allegedly this is fast.
-      // todo: test if we care
-      char[] characters = input.ToArray();
-      Array.Sort(characters);
-      return new string(characters);
-  }
+            words.Add(input);
+        }
+        ProcessBatch(words, Console.Out); // process last batch
+    }
+
+    private static void ProcessBatch(List<string> words, System.IO.TextWriter output)
+    {
+        var grouped = GroupAnagrams(words);
+        foreach (var group in grouped)
+        {
+            output.WriteLine(string.Join(',', group));
+        }
+    }
+
+    public static IEnumerable<IGrouping<string, string>> GroupAnagrams(IList<string> input)
+    {
+        return input.GroupBy(i => SortString(i), i => i);
+    }
+
+    static string SortString(string input)
+    {
+        // https://stackoverflow.com/questions/6441583/is-there-a-simple-way-that-i-can-sort-characters-in-a-string-in-alphabetical-ord
+        // allegedly this is fast.
+        // todo: test if we care
+        char[] characters = input.ToArray();
+        Array.Sort(characters);
+        return new string(characters);
+    }
 }
