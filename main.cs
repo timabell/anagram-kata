@@ -77,7 +77,9 @@ class Tests{
 /*
 Let's have a think about the structure of the solution. We'll TDD this so we need to know the shape first.
 
-We need to stream the file and process as we go to avoid the mentioned out of memory challenge. Let's start with a simple load-everything and use linq and then iterate for perfomance and memory. We can use the tests to ensure no regressions.
+We need to stream the file and process as we go to avoid the mentioned out of memory challenge.
+Let's start with a simple load-everything and use linq and then iterate for perfomance and memory.
+We can use the tests to ensure no regressions.
 
 To take a set of words and find anagram matches
 - slurp file
@@ -85,9 +87,6 @@ To take a set of words and find anagram matches
 - add to list
 - group list by sorted letters (similar to https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/how-to-group-files-by-extension-linq )
 - loop group and print
-
-unit testable - list to group conversion
-
 
 todo/questions
 - case sensitivity? collation (i.e. do accented characters match?)
@@ -110,7 +109,10 @@ todo/questions
 */
 
 /// <summary>
-/// A program that takes as an argument the path to a file containing one word per line, groups the words that are anagrams to each other, and writes to the standard output of each of these groups. The groups should be separated by newlines and the words inside each group by commas.
+/// A program that takes as an argument the path to a file containing one word per line,
+/// groups the words that are anagrams to each other, and writes to the standard output of
+/// each of these groups. The groups should be separated by newlines and the words inside
+/// each group by commas.
 /// </summary>
 public class WordGrouper{
   public static void Run(string inputFile){
@@ -133,11 +135,6 @@ public class WordGrouper{
         words.Clear();
       }
     }
-//    var input = File.ReadAllLines(inputFile).ToList();
-//    var grouped = GroupAnagrams(input);
-//    foreach (var group in grouped){
-//        Console.WriteLine(string.Join(',', group));
-//    }
   }
 
     private static void ProcessBatch(List<string> words)
