@@ -2,6 +2,47 @@ A kata in c#
 
 Originally done in <https://coderpad.io>
 
+# Output
+
+```
+$ dotnet run
+No file provided, just running tests this time. Usage: program.exe <inputfile>
+Processing example1.txt
+foo,oof
+fof
+faaf,ffaa
+fiif
+NUnitLite 3.13.3 (.NET Standard 2.0)
+Copyright (c) 2022 Charlie Poole, Rob Prouse
+
+Runtime Environment
+   OS Version: Linux 5.4.0-153-generic #170-Ubuntu SMP Fri Jun 16 13:43:31 UTC 2023
+  CLR Version: 6.0.1
+
+Test Files
+    /home/tim/repo/anagram-kata/bin/Debug/net6.0/anagram-kata.dll
+
+Test Discovery
+  Start time: 2023-07-13 13:00:41Z
+    End time: 2023-07-13 13:00:41Z
+    Duration: 0.034 seconds
+
+=> Tests.DoesntGroupNonMatchingAnagrams
+=> Tests.GroupsMatchingAnagrams
+
+Run Settings
+    Number of Test Workers: 8
+    Work Directory: /home/tim/repo/anagram-kata
+    Internal Trace: Off
+
+Test Run Summary
+  Overall result: Passed
+  Test Count: 2, Passed: 2, Failed: 0, Warnings: 0, Inconclusive: 0, Skipped: 0
+  Start time: 2023-07-13 13:00:41Z
+    End time: 2023-07-13 13:00:41Z
+    Duration: 0.024 seconds
+```
+
 # O-Complexity
 
 ChatGPT had this to say about the complexity of the algorithm, which is interesting and would need validating properly but doesn't look too far out to me:
