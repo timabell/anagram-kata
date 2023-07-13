@@ -1,3 +1,4 @@
+// https://github.com/timabell/anagram-kata
 using NUnit.Framework;
 using NUnitLite;
 using System;
@@ -109,7 +110,7 @@ todo/questions
 */
 
 /// <summary>
-/// A program that takes as an argument the path to a file containing one word per line, groups the words that are anagrams to each other, and writes to the standard output of each of these groups. The groups should be separated by newlines and the words inside each group by commas.
+/// A program that takes as an argument the path to a file containing one word per line, groups the words that are anagrams to each textInstance.WriteLine(string s);other, and writes to the standard output of each of these groups. The groups should be separated by newlines and the words inside each group by commas.
 /// </summary>
 public class WordGrouper{
   public static void Run(string inputFile){
@@ -117,9 +118,10 @@ public class WordGrouper{
     // todo: move this batching logic out of Run() and unit test, needs some thought as to what the abstraction would like like and I'm out of time.
     // "You can make the following assumptions about the data in the files: The words in the input file are ordered by size"
     // because we know the words step up in size we can track the current size and when we've loaded all the words of one size in to memory (the "words" list) we can then process that group and pass the memorty back to the GC before moving to the next size
+    IEnumerable<string> source = File.ReadLines(inputFile); // pulled this out to enumerable var as prep for extracting testable method
     var wordLength = 0;
     List<string> words = new List<string>();
-    foreach (var line in File.ReadLines(inputFile)){
+    foreach (var line in source){
       var input = line.Trim();
       if (input == ""){ // todo: test coverage
         continue;
@@ -142,6 +144,7 @@ public class WordGrouper{
     {
       var grouped = GroupAnagrams(words);
       foreach (var group in grouped){
+          // todo: write this to some kind of sink to make it testable
           Console.WriteLine(string.Join(',', group));
       }
     }
@@ -160,4 +163,3 @@ public class WordGrouper{
       return new string(characters);
   }
 }
-
