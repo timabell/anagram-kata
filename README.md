@@ -1,6 +1,10 @@
+# What?
+
 A kata in c#
 
 Originally done in <https://coderpad.io>
+
+Groups up anagrams of words from a text file.
 
 # Output
 
