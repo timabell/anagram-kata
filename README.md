@@ -6,6 +6,8 @@ Originally done in <https://coderpad.io>
 
 Groups up anagrams of words from a text file.
 
+All the interesting stuff is in [main.cs](main.cs) which obviously you'd break up in a real project.
+
 # Output
 
 ```
