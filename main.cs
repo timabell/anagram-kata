@@ -110,7 +110,7 @@ todo/questions
 */
 
 /// <summary>
-/// A program that takes as an argument the path to a file containing one word per line, groups the words that are anagrams to each textInstance.WriteLine(string s);other, and writes to the standard output of each of these groups. The groups should be separated by newlines and the words inside each group by commas.
+/// A program that takes as an argument the path to a file containing one word per line, groups the words that are anagrams to each other, and writes to the standard output of each of these groups. The groups should be separated by newlines and the words inside each group by commas.
 /// </summary>
 public class WordGrouper{
   public static void Run(string inputFile){
