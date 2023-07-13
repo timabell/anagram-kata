@@ -19,8 +19,8 @@ class Solution
           Console.WriteLine("No file provided, just running tests this time. Usage: program.exe <inputfile>");
 
           // hard code example files and run them for the sake of this exercise, I don't see a way to pass them in when running in coderpad UI
-          WordGrouper.Run("/home/coderpad/data/example1.txt");
-          WordGrouper.Run("/home/coderpad/data/example2.txt");
+          WordGrouper.Run("example1.txt");
+          //WordGrouper.Run("/home/coderpad/data/example2.txt");
           // This boilerplate is here to be able to run the unit tests in coderpad. There appears to be no buttons or ways to add test files and run them. https://coderpad.io/languages/csharp/
           return new AutoRun(Assembly.GetCallingAssembly()).Execute(new String[] {"--labels=All"});
         }
